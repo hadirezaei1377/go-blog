@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -17,16 +16,17 @@ func UserRegister(c *gin.Context) {
 	var user UserRequest
 	if c.BindJSON(&user) == nil {
 		if !database.CheckUserExists(user.Username) {
-			database.CreateUser(user.Username, user.Password, user.Email)
+			new_user := models.User{
+				Username: user.Username,
+				Email:    user.Email,
+			}
+			new_user.SetPassword(user.Password)
+			database.CreateUser(&new_user)
 			c.JSON(http.StatusOK, gin.H{"status": "user created"})
 		} else {
 			c.JSON(http.StatusConflict, gin.H{"status": "user already exists"})
 		}
 	}
-	fmt.Println(user.Username, user.Password, user.Email)
-	c.JSON(200, gin.H{
-		"message": fmt.Sprint(user.Username, user.Password, user.Email),
-	})
 }
 
 func CheckUsername(c *gin.Context) {
@@ -40,10 +40,6 @@ func CheckUsername(c *gin.Context) {
 	}
 }
 
-func UserLogin(c *gin.Context) {
+func UserLogin(c *gin.Context) {}
 
-}
-
-func UserLogout(c *gin.Context) {
-
-}
+func UserLogout(c *gin.Context) {}
