@@ -2,7 +2,6 @@ package database
 
 import (
 	"fmt"
-
 	"go-blog/models"
 
 	"gorm.io/driver/postgres"

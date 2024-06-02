@@ -2,8 +2,15 @@ package controllers
 
 import (
 	"net/http"
+	"os"
+	"strconv"
+	"time"
+
+	"go-blog/database"
+	"go-blog/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 )
 
 type UserRequest struct {
@@ -40,6 +47,28 @@ func CheckUsername(c *gin.Context) {
 	}
 }
 
-func UserLogin(c *gin.Context) {}
+func UserLogin(c *gin.Context) {
+	var user UserRequest
+	if c.BindJSON(&user) == nil {
+		if db_user, _ := database.GetUserByUsername(user.Username); db_user.ID != 0 {
+			if db_user.ComparePasswords(user.Password) == nil {
+				payload := jwt.StandardClaims{
+					Subject:   strconv.Itoa(int(db_user.ID)),
+					ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+				}
+				token, _ := jwt.NewWithClaims(jwt.SigningMethodHS256, payload).SignedString([]byte(os.Getenv("JWT_SECRET")))
+				c.SetCookie("jwt", token, 86400, "/", "", false, true)
+				c.JSON(http.StatusOK, gin.H{"status": "login success", "token": token})
+			} else {
+				c.JSON(http.StatusUnauthorized, gin.H{"status": "wrong password"})
+			}
+		} else {
+			c.JSON(http.StatusUnauthorized, gin.H{"status": "user not found"})
+		}
+	}
+}
 
-func UserLogout(c *gin.Context) {}
+func UserLogout(c *gin.Context) {
+	c.SetCookie("jwt", "", -1, "/", "", false, true)
+	c.JSON(http.StatusOK, gin.H{"status": "logout success"})
+}
