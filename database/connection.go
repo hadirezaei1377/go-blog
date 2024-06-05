@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+
 	"go-blog/models"
 
 	"gorm.io/driver/postgres"
@@ -21,7 +22,7 @@ func Connect(dsn string) {
 	fmt.Println("Database connection successfully opened")
 
 	// Auto migration
-	err = DB.AutoMigrate(models.User{})
+	err = DB.AutoMigrate(models.User{}, models.Post{})
 	if err != nil {
 		panic("Failed to migrate the database")
 	}
