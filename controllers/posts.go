@@ -3,6 +3,7 @@ package controllers
 import (
 	"go-blog/database"
 	"go-blog/models"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,4 +28,19 @@ func CreatePost(c *gin.Context) {
 			"post_id": post_id,
 		})
 	}
+}
+
+func GetPost(c *gin.Context) {
+	post_id, _ := strconv.Atoi(c.Param("id"))
+	post, _ := database.GetPost(uint(post_id))
+	c.JSON(200, gin.H{
+		"post": post,
+	})
+}
+
+func GetPosts(c *gin.Context) {
+	posts, _ := database.GetPosts()
+	c.JSON(200, gin.H{
+		"posts": posts,
+	})
 }
