@@ -8,9 +8,10 @@ import (
 
 	"go-blog/database"
 	"go-blog/models"
+	"go-blog/session"
+	"go-blog/tools"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
 )
 
 type UserRegisterRequest struct {
@@ -57,28 +58,44 @@ func CheckUsername(c *gin.Context) {
 }
 
 func UserLogin(c *gin.Context) {
+	// Decode the body of request
 	var user UserLoginRequest
-	if c.BindJSON(&user) == nil {
-		if db_user, _ := database.GetUserByUsername(user.Username); db_user.ID != 0 {
-			if db_user.ComparePasswords(user.Password) == nil {
-				payload := jwt.StandardClaims{
-					Subject:   strconv.Itoa(int(db_user.ID)),
-					ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
-				}
-				token, _ := jwt.NewWithClaims(jwt.SigningMethodHS256, payload).SignedString([]byte(os.Getenv("JWT_SECRET")))
-				c.SetCookie("jwt", token, 86400, "/", "", false, true)
-				c.JSON(http.StatusOK, gin.H{"status": "login success", "token": token})
-			} else {
-				c.JSON(http.StatusUnauthorized, gin.H{"status": "wrong password"})
-			}
-		} else {
-			c.JSON(http.StatusUnauthorized, gin.H{"status": "user not found"})
-		}
+	if c.BindJSON(&user) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "invalid request"})
+		return
 	}
+
+	// Check if user exists
+	db_user, err := database.GetUserByUsername(user.Username)
+	if err != nil {
+		if db_user.ID == 0 {
+			c.JSON(http.StatusUnauthorized, gin.H{"status": "user not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error getting user"})
+		return
+	}
+
+	// Check if password is correct
+	if db_user.ComparePasswords(user.Password) != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "wrong password"})
+		return
+	}
+
+	// Store username in the session
+	sn := session.Create(db_user.ID)
+
+	// Generate access token and refresh token
+	access_token, _ := tools.GenerateToken(strconv.Itoa(int(db_user.ID)), time.Hour*1, os.Getenv("JWT_SECRET"))
+	refresh_token, _ := tools.GenerateToken(sn.SessionID, time.Hour*24*7, os.Getenv("REFRESH_TOKEN_SECRET"))
+	c.SetCookie("access_token", access_token, 3600, "/", "", false, true)
+	c.SetCookie("refresh_token", refresh_token, 3600*24*7, "/", "", false, true)
+	c.JSON(http.StatusOK, gin.H{"status": "login success", "session": sn})
 }
 
 func UserLogout(c *gin.Context) {
-	c.SetCookie("jwt", "", -1, "/", "", false, true)
+	c.SetCookie("refresh_token", "", -1, "/", "", false, true)
+	c.SetCookie("access_token", "", -1, "/", "", false, true)
 	c.JSON(http.StatusOK, gin.H{"status": "logout success"})
 }
 
