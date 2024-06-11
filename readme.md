@@ -1,4 +1,4 @@
-### go-blog
+### go-blog     ---> blog using Go and Svelte  <---
 
 ### Summary
 
