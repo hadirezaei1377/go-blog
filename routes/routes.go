@@ -3,6 +3,7 @@ package routes
 import (
 	"go-blog/controllers"
 	"go-blog/middlewares"
+	"go-blog/models/permissions"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,8 +30,18 @@ func IntializeRoutes(router *gin.Engine) {
 
 	category_routes := router.Group("api/v1/categories")
 	{
-		category_routes.POST("/", middlewares.RequireLogin, controllers.CreateCategory)
+		category_routes.POST("/", middlewares.RequireLogin, middlewares.CheckPermissions(permissions.CreateCategory), controllers.CreateCategory)
 		category_routes.GET("/:id", controllers.GetCategory)
 		category_routes.GET("/", controllers.GetCategories)
+	}
+
+	role_routes := router.Group("api/v1/roles")
+	{
+		// Not implemented routes
+		role_routes.POST("/", middlewares.RequireLogin, middlewares.CheckPermissions(permissions.CreateRole), controllers.CreateRole)
+		role_routes.PATCH("/", middlewares.RequireLogin, middlewares.CheckPermissions(permissions.UpdateRole), controllers.UpdateRole)
+		role_routes.GET("/:id", controllers.GetRole)
+		role_routes.GET("/", controllers.GetRoles)
+		role_routes.DELETE("/:id", middlewares.RequireLogin, middlewares.CheckPermissions(permissions.DeleteRole), controllers.DeleteRole)
 	}
 }
