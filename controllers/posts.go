@@ -10,17 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-package controllers
-
-import (
-	"strconv"
-
-	"github.com/arshamalh/blogo/database"
-	"github.com/arshamalh/blogo/models"
-	"github.com/arshamalh/blogo/tools"
-	"github.com/gin-gonic/gin"
-)
-
 type PostRequest struct {
 	Title      string   `form:"title" json:"title" binding:"required"`
 	Content    string   `form:"content" json:"content" binding:"required"`
