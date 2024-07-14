@@ -2,12 +2,12 @@ package database
 
 import "go=blog/models"
 
-func AddComment(comment *models.Comment) error {
-	return DB.Create(comment).Error
+func (gdb *gormdb) AddComment(comment *models.Comment) error {
+	return gdb.db.Create(comment).Error
 }
 
-func GetComment(id uint) (*models.Comment, error) {
+func (gdb *gormdb) GetComment(id uint) (*models.Comment, error) {
 	var comment models.Comment
-	err := DB.Where("id = ?", id).First(&comment).Error
+	err := gdb.db.Where("id = ?", id).First(&comment).Error
 	return &comment, err
 }
