@@ -5,7 +5,7 @@ import (
 
 	"go-blog/models"
 
-	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
 )
 
 type categoryController struct {
@@ -18,28 +18,28 @@ func NewCategoryController(db databases.Database) *categoryController {
 	}
 }
 
-func (cc *categoryController) CreateCategory(c *gin.Context) {
+func (cc *categoryController) CreateCategory(c echo.Context) error {
 	var category models.Category
-	if c.BindJSON(&category) != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "invalid request"})
+	if c.Bind(&category) != nil {
+		return c.JSON(http.StatusBadRequest, echo.Map{"status": "invalid request"})
 	} else if cc.db.CheckCategoryExists(category.Name) {
-		c.JSON(http.StatusConflict, gin.H{"status": "category already exists"})
+		return c.JSON(http.StatusConflict, echo.Map{"status": "category already exists"})
 	} else {
 		cc.db.CreateCategory(&category)
-		c.JSON(http.StatusOK, gin.H{"status": "category created"})
+		return c.JSON(http.StatusOK, echo.Map{"status": "category created"})
 	}
 }
 
-func (cc *categoryController) GetCategory(c *gin.Context) {
+func (cc *categoryController) GetCategory(c echo.Context) error {
 	category, _ := cc.db.GetCategory(c.Param("name"))
 	if category.ID != 0 {
-		c.JSON(http.StatusOK, category)
+		return c.JSON(http.StatusOK, category)
 	} else {
-		c.JSON(http.StatusNotFound, gin.H{"status": "category not found"})
+		return c.JSON(http.StatusNotFound, echo.Map{"status": "category not found"})
 	}
 }
 
-func (cc *categoryController) GetCategories(c *gin.Context) {
+func (cc *categoryController) GetCategories(c echo.Context) error {
 	categories, _ := cc.db.GetCategories()
-	c.JSON(http.StatusOK, categories)
+	return c.JSON(http.StatusOK, categories)
 }
