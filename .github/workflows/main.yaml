@@ -23,6 +23,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: arshamalh/blogo:latest
-          secrets: |
-            DOCKER_BUILDKIT=1
+          tags: hadirezaei/go-blog:latest
