@@ -1,6 +1,6 @@
-package database
+package databases
 
-import "go=blog/models"
+import "go-blog/models"
 
 func (gdb *gormdb) CreatePost(post *models.Post) (uint, error) {
 	err := gdb.db.Create(&post).Error

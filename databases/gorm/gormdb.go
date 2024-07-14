@@ -1,10 +1,10 @@
-package database
+package databases
 
 import (
 	"fmt"
 
 	"go-blog/models"
-	"go=blog/models/permissions"
+	"go-blog/models/permissions"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

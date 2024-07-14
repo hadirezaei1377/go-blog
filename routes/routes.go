@@ -2,6 +2,7 @@ package routes
 
 import (
 	"go-blog/controllers"
+	"go-blog/databases"
 	"go-blog/middlewares"
 	"go-blog/models/permissions"
 	"net/http"

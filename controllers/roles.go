@@ -1,10 +1,10 @@
 package controllers
 
 import (
+	"go-blog/databases"
+	"go-blog/models"
 	"net/http"
 	"strconv"
-
-	"go-blog/models"
 
 	"github.com/labstack/echo/v4"
 )

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"go-blog/database"
+	database "go-blog/databases"
 	"go-blog/routes"
 	"go-blog/tools"
 	"os"

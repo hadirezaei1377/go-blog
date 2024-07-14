@@ -1,6 +1,8 @@
-package database
+package databases
 
-import "go-blog/models"
+import (
+	"go-blog/models"
+)
 
 func (gdb *gormdb) CheckCategoryExists(name string) bool {
 	results := gdb.db.Take(&models.Category{}, "name = ?", name)
