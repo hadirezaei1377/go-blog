@@ -12,9 +12,11 @@ import (
 
 func main() {
 	// Load environment variables
-	godotenv.Load()
+	logger := log.InitializeLogger()
 
-	logger := tools.InitializeLogger()
+	if err := godotenv.Load(); err != nil {
+		logger.Error(err.Error())
+	}
 
 	// Database
 	dsn := tools.DBConfig{
@@ -23,7 +25,11 @@ func main() {
 		DBName:   os.Getenv("DB_NAME"),
 		Host:     os.Getenv("HOST"),
 	}
-	db := database.Connect(dsn.String())
+	db, err := database.Connect(dsn.String())
+	if err != nil {
+		log.Gl.Error(err.Error())
+		return
+	}
 
 	// Router
 	router := echo.New()

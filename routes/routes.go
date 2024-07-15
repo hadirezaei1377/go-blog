@@ -7,13 +7,14 @@ import (
 	"go-blog/models/permissions"
 	"net/http"
 
+	"github.com/labstack/echo/middleware"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )
 
 func InitializeRoutes(router *echo.Echo, db databases.Database, logger *zap.Logger) {
 	// Basic configurations and middleware.
-	router.Use(emdware.CORSWithConfig(emdware.CORSConfig{
+	router.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"http://localhost:3000"},
 	}))
 
@@ -22,6 +23,8 @@ func InitializeRoutes(router *echo.Echo, db databases.Database, logger *zap.Logg
 	router.GET("/health", func(c echo.Context) error {
 		return c.JSON(http.StatusNoContent, nil)
 	})
+
+	router.GET("/docs/*", echoSwagger.WrapHandler)
 
 	/// ** Routes
 
@@ -48,7 +51,7 @@ func InitializeRoutes(router *echo.Echo, db databases.Database, logger *zap.Logg
 	}
 
 	comment_routes := router.Group("api/v1/comments")
-	comment_controller := controllers.NewCommentController(db, logger)
+	comment_controller := controllers.NewCommentController(db)
 	{
 		comment_routes.POST("/", comment_controller.CreateComment, middlewares.RequireLogin)
 	}

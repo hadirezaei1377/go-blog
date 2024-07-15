@@ -1,6 +1,8 @@
 package databases
 
-import "go-blog/models"
+import (
+	"go-blog/models"
+)
 
 func (gdb *gormdb) CreateRole(role *models.Role) error {
 	err := gdb.db.Create(&role).Error

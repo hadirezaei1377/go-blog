@@ -1,10 +1,8 @@
 package session
 
-import "strconv"
-
-// Sessions should be stored in a database,
-// and it's better to use Redis for session as it's fast,
-// but for now, we want to keep it simple.
+import (
+	"strconv"
+)
 
 type Session struct {
 	SessionID string `json:"session_id"`
