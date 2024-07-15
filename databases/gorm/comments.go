@@ -1,8 +1,6 @@
 package databases
 
-import (
-	"go-blog/models"
-)
+import "go-blog/models"
 
 func (gdb *gormdb) AddComment(comment *models.Comment) error {
 	return gdb.db.Create(comment).Error

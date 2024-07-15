@@ -7,13 +7,13 @@ import (
 	"go-blog/models/permissions"
 	"net/http"
 
-	"github.com/labstack/echo/middleware"
+	"github.com/labstack/echo/v4/middleware"
+
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )
 
 func InitializeRoutes(router *echo.Echo, db databases.Database, logger *zap.Logger) {
-	// Basic configurations and middleware.
 	router.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"http://localhost:3000"},
 	}))
@@ -24,10 +24,6 @@ func InitializeRoutes(router *echo.Echo, db databases.Database, logger *zap.Logg
 		return c.JSON(http.StatusNoContent, nil)
 	})
 
-	router.GET("/docs/*", echoSwagger.WrapHandler)
-
-	/// ** Routes
-
 	user_routes := router.Group("/api/v1/users")
 	uc := controllers.NewUserController(db, logger)
 	{
@@ -36,8 +32,7 @@ func InitializeRoutes(router *echo.Echo, db databases.Database, logger *zap.Logg
 		user_routes.POST("/logout", uc.UserLogout, middlewares.RequireLogin)
 		user_routes.GET("/check_username", uc.CheckUsername)
 		user_routes.GET("/id", uc.UserID, middlewares.RequireLogin)
-		// Get & Update Profile and more
-		// user_routes.GET("/info/:id", controllers.UserInfo)
+
 	}
 
 	post_routes := router.Group("api/v1/posts")
@@ -62,8 +57,6 @@ func InitializeRoutes(router *echo.Echo, db databases.Database, logger *zap.Logg
 		category_routes.POST("/", cc.CreateCategory, middlewares.RequireLogin, middlewares.CheckPermissions(db, permissions.CreateCategory))
 		category_routes.GET("/:id", cc.GetCategory)
 		category_routes.GET("/", cc.GetCategories)
-		// category_routes.PATCH("/:id", middlewares.RequireLogin, middlewares.CheckPermissions(db, permissions.UpdateCategory), controllers.UpdateCategory)
-		// category_routes.DELETE("/:id", middlewares.RequireLogin, middlewares.CheckPermissions(db, permissions.DeleteCategory), controllers.DeleteCategory)
 	}
 
 	role_routes := router.Group("api/v1/roles")

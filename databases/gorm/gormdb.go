@@ -13,6 +13,36 @@ type gormdb struct {
 	db *gorm.DB
 }
 
+// AddComment implements databases.Database.
+func (gdb *gormdb) AddComment(comment *models.Comment) error {
+	panic("unimplemented")
+}
+
+// CheckCategoryExists implements databases.Database.
+func (gdb *gormdb) CheckCategoryExists(name string) bool {
+	panic("unimplemented")
+}
+
+// CreateCategory implements databases.Database.
+func (gdb *gormdb) CreateCategory(catg *models.Category) (uint, error) {
+	panic("unimplemented")
+}
+
+// GetCategories implements databases.Database.
+func (gdb *gormdb) GetCategories() ([]models.Category, error) {
+	panic("unimplemented")
+}
+
+// GetCategory implements databases.Database.
+func (gdb *gormdb) GetCategory(name string) (*models.Category, error) {
+	panic("unimplemented")
+}
+
+// GetComment implements databases.Database.
+func (gdb *gormdb) GetComment(id uint) (*models.Comment, error) {
+	panic("unimplemented")
+}
+
 func Connect(dsn string) (*gormdb, error) {
 	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		SkipDefaultTransaction: true,

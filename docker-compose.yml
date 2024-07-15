@@ -1,12 +1,12 @@
 version: '3.8'
 services:
   blogo:
-    container_name: blogo
+    container_name: go-blog
     build: .
     ports:
       - "80:80"
     networks:
-      - blogo
+      - go-blog
     depends_on:
       - postgres
     environment:

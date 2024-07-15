@@ -2,42 +2,18 @@
 
 ### Summary
 
-we provide a space for sharing blogs ... you can contribute
+we provide a space for sharing blogs ... 
 
 ### prerequisites
 
 - golang (Echo)
 - frontend (Svelte) 
 - postgres (Database)
-- bun (orm)
+- gorm (orm)
 - zap (logging)
 - docker 
 - JWT
 - github actions
-
-### Installation
-
-
-
-### Setting up
-
-
-
-### Use
-
-
-
-### test
-
-
-
-### participation
-
-
-
-### License
-
-
 
 
 

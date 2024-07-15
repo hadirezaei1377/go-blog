@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"go-blog/databases"
+	"go-blog/log"
 	"go-blog/models"
 	"go-blog/session"
 	"net/http"
@@ -37,20 +38,6 @@ func NewUserController(db databases.Database, logger *zap.Logger) *userControlle
 	}
 }
 
-// ShowAccount   godoc
-// @Summary      Register a user
-// @Description  Register a user
-// @Accept       json
-// @Produce      json
-// @Param        Username body string true "Username"
-// @Param        Password body string true "Password"
-// @Param        Email body string true "Email"
-// @Param        FirstName body string false "FirstName"
-// @Param        LastName body string false "LastName"
-// @Success      201 {object} map[string]any
-// @Failure      400 {object} map[string]any
-// @Failure      409 {object} map[string]any
-// @Router       /users/register [post]
 func (uc *userController) UserRegister(ctx echo.Context) error {
 	var user UserRegisterRequest
 	if ctx.Bind(&user) != nil {

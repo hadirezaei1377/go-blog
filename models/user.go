@@ -1,6 +1,8 @@
 package models
 
 import (
+	"go-blog/log"
+
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )

@@ -1,7 +1,9 @@
 package main
 
 import (
-	database "go-blog/databases"
+	database "go-blog/databases/gorm"
+	"go-blog/log"
+
 	"go-blog/routes"
 	"go-blog/tools"
 	"os"
@@ -36,5 +38,7 @@ func main() {
 	routes.InitializeRoutes(router, db, logger)
 	router.StaticFS("/", os.DirFS("./ui"))
 
-	router.Start(":80")
+	if err := router.Start(":8080"); err != nil {
+		log.Gl.Error(err.Error())
+	}
 }
