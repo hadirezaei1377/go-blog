@@ -24,3 +24,5 @@ jobs:
           context: .
           push: true
           tags: hadirezaei1377/go-blog:latest
+          secrets: |
+            DOCKER_BUILDKIT=1
